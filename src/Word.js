@@ -1,112 +1,76 @@
-const WORD_RADIUS = 700
-const CONSONANT_RADIUS = 150
+import Consonant from "./Consonant";
+import { P5 } from "./main";
+import {
+  WORD_RADIUS,
+  CONSONANT_TYPE_CUT_WORD,
+  CONSONANT_TYPE_INNER,
+  CONSONANT_TYPE_CROSS,
+  CONSONANT_TYPE_HALF,
+  CONSONANT_TYPE_CUT,
+  VOWEL_A,
+  VOWEL_E,
+  VOWEL_U,
+  VOWEL_I,
+  VOWEL_O,
+} from "./Costants";
 
+import Vowel from "./Vowel";
 export default class Word {
-  static p5;
-  static tilt = 40;
- 
-  constructor(x, y) {
-    
+  constructor(word_string, x, y) {
+    this.wordString = word_string.toLowerCase();
     this.x = x;
     this.y = y;
+    this.letters = [];
+    this.amplitude = 1;
+    this.mapString();
   }
-  drawInnerConsonant(angle) {
-    let x =
-      (WORD_RADIUS - CONSONANT_RADIUS - Word.tilt) *
-      Word.p5.cos(angle) *
-      this.scale;
-    let y =
-      (WORD_RADIUS - CONSONANT_RADIUS - Word.tilt) *
-      Word.p5.sin(angle) *
-      this.scale;
-    this.drawConsonantCircle(x, y);
-  }
-  drawConsonantCircle(x, y, fill = true) {
-    Word.p5.push();
-    Word.p5.translate(x, y);
-    Word.p5.fill("white");
-    if (!fill) {
-      Word.p5.noFill();
+
+  mapString() {
+    for (let i = 0; i < this.wordString.length; i++) {
+      let vowel = Vowel.getVowel(this.wordString[i]);
+      if (vowel) {
+        this.letters.push(vowel);
+        continue;
+      }
+      let consonant = Consonant.getConsonant(this.wordString[i]);
+      if (this.wordString[i] == "q" && this.wordString[i + 1] == "u") {
+        i++;
+      }
+      if (consonant) {
+        vowel = Vowel.getVowel(this.wordString[i + 1]);
+        if (vowel) {
+          consonant.vowel = vowel;
+          i++;
+        }
+        this.letters.push(consonant);
+      }
     }
-
-    this.drawCircle(0, 0, CONSONANT_RADIUS);
-
-    Word.p5.pop();
+    let angle = 360 / this.letters.length;
+    console.log(angle);
+    if (angle < 60) {
+      this.amplitude = 6 / this.letters.length;
+    }
+    this.letters = this.letters.map((letter, index) => {
+      letter.angle = -angle * index + 90;
+      letter.amplitude = this.amplitude;
+      return letter;
+    });
+    console.log(this.letters);
   }
 
-  drawCircle(x, y, radius) {
-    Word.p5.circle(0, 0, radius * 2 * this.scale);
-  }
+  draw() {
+    P5.translate(this.x, this.y);
+    P5.circle(0, 0, WORD_RADIUS * 2 * this.scale);
 
-  drawCrossConsonant(angle) {
-    let x = WORD_RADIUS * this.scale * Word.p5.cos(angle);
-    let y = WORD_RADIUS * this.scale * Word.p5.sin(angle);
-    this.drawConsonantCircle(x, y, false);
-  }
-
-  drawHalfConsonant(angle) {
-    this.drawCutWord(angle,CONSONANT_RADIUS,CONSONANT_RADIUS);
-  }
-
-  tiltArc(r1,r2,tiltCut){
-    let d = r1 + r2 - tiltCut;
-    let a = -r1 * r1 + d * d + r2 * r2;
-    let b = 2 * d * r2;
-    return 2 * Word.p5.acos(a / b);
-  }
-
-  drawCutWord(angle,tiltCut,radiusCut) {    
-
-    let x =
-      (WORD_RADIUS + radiusCut - tiltCut) * Word.p5.cos(angle) * this.scale;
-    let y =
-      (WORD_RADIUS + radiusCut - tiltCut) * Word.p5.sin(angle) * this.scale;
-
-   
-    
-    Word.p5.angleMode(Word.p5.RADIANS);
-
-  
-    let tiltArc =this.tiltArc(WORD_RADIUS,radiusCut,tiltCut)
-    tiltArc =Word.p5.degrees(tiltArc)
-    Word.p5.push();
-    Word.p5.translate(x, y);
-    Word.p5.angleMode(Word.p5.DEGREES);
-    Word.p5.rotate(angle + 180);
-
-    Word.p5.noStroke();
-    this.drawCircle(0, 0, radiusCut);
-    
-    Word.p5.stroke("black");
-    Word.p5.arc(
-      0,
-      0,
-      radiusCut * 2 * this.scale,
-      radiusCut * 2 * this.scale,
-      -tiltArc/2,
-      tiltArc/2,
-      Word.p5.OPEN
-    );
-
-    Word.p5.pop();
-  }
-
-  drawCutConsonant(angle) {
-
-    this.drawCutWord(angle,CONSONANT_RADIUS*1.8,CONSONANT_RADIUS);
-     
-  }
-  draw(scale = 1) {
-    this.scale = scale;
-    Word.p5.circle(this.x, this.y, WORD_RADIUS * 2 * this.scale);
-
-    Word.p5.translate(this.x, this.y);
-    
-    this.drawInnerConsonant(0);
-    this.drawCrossConsonant(90);
-    this.drawHalfConsonant(180);
-    this.drawCutConsonant(270);
-
-    this.drawCutWord(-34,CONSONANT_RADIUS,CONSONANT_RADIUS*4);
+    this.letters.forEach((letter) => {
+      letter.scale = this.scale;      
+      letter.draw();
+    });
+    // let vA = new Vowel(VOWEL_U)
+    // let conA = new Consonant(CONSONANT_S,this);
+    // conA.angle = 60
+    // conA.scale=this.scale
+    // conA.vowel=vA
+    // conA.draw();
   }
 }
