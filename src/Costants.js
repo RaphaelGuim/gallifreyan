@@ -42,6 +42,10 @@ export const  CONSONANT_X = CONSONANT_TYPE_CROSS
 export const  CONSONANT_Y = CONSONANT_TYPE_CROSS
 export const  CONSONANT_Z = CONSONANT_TYPE_CROSS
 
+export const  MODIFIER_OUT = 11
+export const  MODIFIER_INNER = 12
+export const  MODIFIER_DOOTS = 13
+
 
 
 

@@ -14,13 +14,25 @@ const P5 = new p5((p) => {
   //   w.draw(0.5);
   // };
 });
-let w = new Word("vinretaseroum",P5.windowWidth / 2, P5.windowHeight / 2 );
+
+let words =[
+  new Word("bacaqaraa",500, 200 ),
+  new Word("beceqeree",500, 600 ),
+  new Word("biciqirii",500, 1000 ),
+  new Word("bocoqoroo",1500, 200 ),
+  new Word("bucuxuruu",1500, 600 ),
+]
+ 
 
 P5.draw = ()=>{
   
   P5.background("white");
-  w.scale = 0.5
-  w.draw();
+  words.forEach(w=>{
+    w.scale = 0.35
+    w.draw();
+  })
+ 
+  
 }
 
 export {P5}

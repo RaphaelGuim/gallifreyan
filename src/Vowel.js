@@ -16,6 +16,8 @@ import {
   CONSONANT_RADIUS,
   CUT_CONSONANT_TILT,
   CUT_CONSONANT_VOWEL_TILT,
+  MODIFIER_INNER,
+  MODIFIER_OUT,
 } from "./Costants";
 export default class Vowel {
   constructor(type) {
@@ -26,28 +28,20 @@ export default class Vowel {
     this.y = 0;
     this.amplitude = 1;
   }
-
-  draw() {
-    
-
-    P5.angleMode(P5.DEGREES);
-    let ACos = P5.cos(this.angle) * this.scale;
-    let ASin = P5.sin(this.angle) * this.scale;
+  getDistance() {
+    let distance;
     if (!this.consonant) {
       switch (this.type) {
         case VOWEL_A:
-          this.x = WORD_RADIUS + VOWEL_TILT * this.amplitude;
-          this.y = WORD_RADIUS + VOWEL_TILT * this.amplitude;
+          distance = WORD_RADIUS + VOWEL_TILT * this.amplitude;
           break;
         case VOWEL_I:
         case VOWEL_E:
         case VOWEL_U:
-          this.x = WORD_RADIUS;
-          this.y = WORD_RADIUS;
+          distance = WORD_RADIUS;
           break;
         case VOWEL_O:
-          this.x = WORD_RADIUS - VOWEL_TILT * this.amplitude;
-          this.y = WORD_RADIUS - VOWEL_TILT * this.amplitude;
+          distance = WORD_RADIUS - VOWEL_TILT * this.amplitude;
           break;
       }
     } else {
@@ -55,33 +49,18 @@ export default class Vowel {
         case VOWEL_A:
           switch (this.consonant.type) {
             case CONSONANT_TYPE_INNER:
-              this.x =
-                CONSONANT_RADIUS * this.amplitude +
-                WORD_TILT +
-                VOWEL_TILT * this.amplitude;
-              this.y =
-                CONSONANT_RADIUS * this.amplitude +
-                WORD_TILT +
-                VOWEL_TILT * this.amplitude;
+              distance =
+                (CONSONANT_RADIUS + VOWEL_TILT) * this.amplitude + WORD_TILT;
               break;
             case CONSONANT_TYPE_CROSS:
-              this.x = VOWEL_TILT * this.amplitude;
-              this.y = VOWEL_TILT * this.amplitude;
+              distance = VOWEL_TILT * this.amplitude;
               break;
             case CONSONANT_TYPE_HALF:
-              this.x = VOWEL_TILT * this.amplitude;
-              this.y = VOWEL_TILT * this.amplitude;
+              distance = VOWEL_TILT * this.amplitude;
               break;
             case CONSONANT_TYPE_CUT:
-              this.x =
-                CONSONANT_RADIUS *
-                this.amplitude *
-                CUT_CONSONANT_VOWEL_TILT *
-                this.amplitude;
-              this.y =
-                CONSONANT_RADIUS *
-                this.amplitude *
-                CUT_CONSONANT_VOWEL_TILT *
+              distance =
+                (CONSONANT_RADIUS - CUT_CONSONANT_VOWEL_TILT + VOWEL_TILT) *
                 this.amplitude;
               break;
           }
@@ -90,56 +69,68 @@ export default class Vowel {
         case VOWEL_O:
           switch (this.consonant.type) {
             case CONSONANT_TYPE_INNER:
-              this.x = -CONSONANT_RADIUS * this.amplitude;
-              this.y = -CONSONANT_RADIUS * this.amplitude;
+              distance = -CONSONANT_RADIUS * this.amplitude;
+
               break;
             case CONSONANT_TYPE_CROSS:
-              this.x = -CONSONANT_RADIUS * this.amplitude;
-              this.y = -CONSONANT_RADIUS * this.amplitude;
+              distance = -CONSONANT_RADIUS * this.amplitude;
+
               break;
             case CONSONANT_TYPE_HALF:
-              this.x = -CONSONANT_RADIUS * this.amplitude;
-              this.y = -CONSONANT_RADIUS * this.amplitude;
+              distance = -CONSONANT_RADIUS * this.amplitude;
+
               break;
             case CONSONANT_TYPE_CUT:
-              this.x = -CONSONANT_RADIUS * this.amplitude;
-              this.y = -CONSONANT_RADIUS * this.amplitude;
+              distance = -CONSONANT_RADIUS * this.amplitude;
+
               break;
           }
           break;
       }
     }
-    P5.noFill();
-    this.x = this.x*ACos
-    this.y = this.y*ASin
+    return distance;
+  }
 
-    if (this.type == VOWEL_U || this.type == VOWEL_I) {
-      P5.push()
-      P5.translate(this.x,this.y)
-      let x0 = VOWEL_RADIUS * this.amplitude;
-      let y0 = VOWEL_RADIUS * this.amplitude;
-      let x1 = 6 * VOWEL_RADIUS * this.amplitude;
-      let y1 = 6 * VOWEL_RADIUS * this.amplitude;
-      if (this.type == VOWEL_I) {
-        x0 = VOWEL_RADIUS * this.amplitude;
-        y0 = VOWEL_RADIUS * this.amplitude;
-        x1 = 6 * VOWEL_RADIUS * this.amplitude;
-        y1 = 6 * VOWEL_RADIUS * this.amplitude;
-      }
-
-      P5.line(x0 * ACos, y0 * ASin, x1 * ACos, y1 * ASin);
-      P5.pop()
-    }
+  draw() {
+    this.ACos = P5.cos(this.angle) * this.scale;
+    this.ASin = P5.sin(this.angle) * this.scale;
     
-    P5.push()
-    P5.translate( this.x,this.y)
-    P5.circle(
-      0,
-      0,
-      VOWEL_RADIUS * 2 * this.amplitude * this.scale
-    );
+    let distance = this.getDistance();
+
+    
+    this.x = distance * this.ACos;
+    this.y = distance * this.ASin;
+
+    if (this.type == VOWEL_U) {
+      this.modifier(MODIFIER_OUT);
+    } else if (this.type == VOWEL_I) {
+      this.modifier(MODIFIER_INNER);
+    }
+
+    P5.push();
+    P5.translate(this.x, this.y);
+    P5.noFill();
+    P5.circle(0, 0, VOWEL_RADIUS * 2 * this.amplitude * this.scale);
     P5.fill("white");
-    P5.pop()
+    P5.pop();
+  }
+  modifier(type) {
+    P5.push();
+    P5.translate(this.x, this.y);
+    let x0, y0, x1, y1;
+    if (type == MODIFIER_INNER) {
+      x0 = -VOWEL_RADIUS * this.amplitude;
+      y0 = -VOWEL_RADIUS * this.amplitude;
+      x1 = -6 * VOWEL_RADIUS * this.amplitude;
+      y1 = -6 * VOWEL_RADIUS * this.amplitude;
+    } else if (type == MODIFIER_OUT) {
+      x0 = VOWEL_RADIUS * this.amplitude;
+      y0 = VOWEL_RADIUS * this.amplitude;
+      x1 = 6 * VOWEL_RADIUS * this.amplitude;
+      y1 = 6 * VOWEL_RADIUS * this.amplitude;
+    }
+    P5.line(x0 * this.ACos, y0 * this.ASin, x1 * this.ACos, y1 * this.ASin);
+    P5.pop();
   }
   static getVowel(letter) {
     if ("aeiou".includes(letter)) {

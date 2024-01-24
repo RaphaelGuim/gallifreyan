@@ -46,7 +46,7 @@ export default class Word {
       }
     }
     let angle = 360 / this.letters.length;
-    console.log(angle);
+   
     if (angle < 60) {
       this.amplitude = 6 / this.letters.length;
     }
@@ -55,17 +55,20 @@ export default class Word {
       letter.amplitude = this.amplitude;
       return letter;
     });
-    console.log(this.letters);
+ 
   }
 
   draw() {
+    P5.push()
     P5.translate(this.x, this.y);
+    P5.noFill();
     P5.circle(0, 0, WORD_RADIUS * 2 * this.scale);
 
     this.letters.forEach((letter) => {
       letter.scale = this.scale;      
       letter.draw();
     });
+    P5.pop()
     // let vA = new Vowel(VOWEL_U)
     // let conA = new Consonant(CONSONANT_S,this);
     // conA.angle = 60

@@ -157,6 +157,7 @@ export default class Consonant {
     P5.rotate(this.angle + 180);
 
     P5.noStroke();
+    P5.fill("white")
     this.drawCircle(0, 0, radiusCut);
 
     P5.stroke("black");
@@ -208,6 +209,8 @@ export default class Consonant {
       this.vowel.scale = this.scale;
       this.vowel.amplitude = this.amplitude;
       this.vowel.consonant = this;
+      this.vowel.x = this.x
+      this.vowel.y = this.y
       this.vowel.draw();
       P5.pop();
     }
