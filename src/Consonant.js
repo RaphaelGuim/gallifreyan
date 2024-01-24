@@ -9,7 +9,7 @@ import {
   CONSONANT_TYPE_CROSS,
   CONSONANT_TYPE_HALF,
   CONSONANT_TYPE_CUT,
-  CUT_CONSONANT_TILT,
+  CUT_CONSONANT_TILT_MULTIPLIER,
   CONSONANT_B,
   CONSONANT_C,
   CONSONANT_D,
@@ -45,8 +45,11 @@ export default class Consonant {
     this.scale = 1;
     this.x = 0;
     this.y = 0;
+    this.Ox;
+    this.Oy;
     this.amplitude = 1;
     this.vowel = null;
+    this.modifiers = [];
   }
   drawInnerConsonant() {
     this.x =
@@ -57,7 +60,7 @@ export default class Consonant {
       (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
       P5.sin(this.angle) *
       this.scale;
-    this.drawConsonantCircle(this.x, this.y);
+    this.drawConsonantCircle(this.x, this.y, false);
   }
   drawConsonantCircle(x, y, fill = true) {
     P5.push();
@@ -70,7 +73,7 @@ export default class Consonant {
     P5.pop();
   }
 
-  drawCircle(x, y, radius) { 
+  drawCircle(x, y, radius) {
     P5.circle(x, y, radius * 2 * this.scale);
   }
 
@@ -86,97 +89,98 @@ export default class Consonant {
       CONSONANT_RADIUS * this.amplitude
     );
   }
-  static getConsonant(letter) {
+  static getConsonant(letter, word) {
     switch (letter) {
       case "b":
-        return new Consonant(CONSONANT_B, this);
+        return new Consonant(CONSONANT_B, word);
       case "c":
-        return new Consonant(CONSONANT_C, this);
+        return new Consonant(CONSONANT_C, word);
       case "d":
-        return new Consonant(CONSONANT_D, this);
+        return new Consonant(CONSONANT_D, word);
       case "f":
-        return new Consonant(CONSONANT_F, this);
+        return new Consonant(CONSONANT_F, word);
       case "g":
-        return new Consonant(CONSONANT_G, this);
+        return new Consonant(CONSONANT_G, word);
       case "h":
-        return new Consonant(CONSONANT_H, this);
+        return new Consonant(CONSONANT_H, word);
       case "j":
-        return new Consonant(CONSONANT_J, this);
+        return new Consonant(CONSONANT_J, word);
       case "k":
-        return new Consonant(CONSONANT_K, this);
+        return new Consonant(CONSONANT_K, word);
       case "l":
-        return new Consonant(CONSONANT_L, this);
+        return new Consonant(CONSONANT_L, word);
       case "m":
-        return new Consonant(CONSONANT_M, this);
+        return new Consonant(CONSONANT_M, word);
       case "n":
-        return new Consonant(CONSONANT_N, this);
+        return new Consonant(CONSONANT_N, word);
       case "p":
-        return new Consonant(CONSONANT_P, this);
+        return new Consonant(CONSONANT_P, word);
       case "q":
-        return new Consonant(CONSONANT_Q, this);
+        return new Consonant(CONSONANT_Q, word);
       case "r":
-        return new Consonant(CONSONANT_R, this);
+        return new Consonant(CONSONANT_R, word);
       case "s":
-        return new Consonant(CONSONANT_S, this);
+        return new Consonant(CONSONANT_S, word);
       case "t":
-        return new Consonant(CONSONANT_T, this);
+        return new Consonant(CONSONANT_T, word);
       case "v":
-        return new Consonant(CONSONANT_V, this);
+        return new Consonant(CONSONANT_V, word);
       case "x":
-        return new Consonant(CONSONANT_X, this);
+        return new Consonant(CONSONANT_X, word);
       case "w":
-        return new Consonant(CONSONANT_W, this);
+        return new Consonant(CONSONANT_W, word);
       case "y":
-        return new Consonant(CONSONANT_Y, this);
+        return new Consonant(CONSONANT_Y, word);
       case "z":
-        return new Consonant(CONSONANT_Z, this);
+        return new Consonant(CONSONANT_Z, word);
     }
   }
   tiltArc(r1, r2, tiltCut) {
+    P5.angleMode(P5.RADIANS);
     let d = r1 + r2 - tiltCut;
     let a = -r1 * r1 + d * d + r2 * r2;
     let b = 2 * d * r2;
-    return 2 * P5.acos(a / b);
+    let angle = 2 * P5.acos(a / b);
+    P5.angleMode(P5.DEGREES);
+    return P5.degrees(angle);
   }
 
   drawCutWord(tiltCut, radiusCut) {
-    this.x =
-      (WORD_RADIUS + radiusCut - tiltCut) * P5.cos(this.angle) * this.scale;
-    this.y =
-      (WORD_RADIUS + radiusCut - tiltCut) * P5.sin(this.angle) * this.scale;
-
-    P5.angleMode(P5.RADIANS);
+    let distance = (WORD_RADIUS + radiusCut - tiltCut) * this.scale;
+    this.x = distance * P5.cos(this.angle);
+    this.y = distance * P5.sin(this.angle);
 
     let tiltArc = this.tiltArc(WORD_RADIUS, radiusCut, tiltCut);
-    tiltArc = P5.degrees(tiltArc);
+    let wordArc = this.tiltArc(radiusCut, WORD_RADIUS, tiltCut);
 
+    //CLEAR WORD PERIMETER
+    P5.push();    
+    P5.rotate(this.angle);
+    P5.stroke("white");
+    P5.strokeWeight(this.word.strokeWeight*5);
+    P5.strokeCap(P5.SQUARE);
+    let clearRadius = WORD_RADIUS * 2 * this.scale;
+    
+
+    P5.arc(0, 0, clearRadius, clearRadius, -wordArc / 2, wordArc / 2, P5.CLOSE);
+  
+    P5.pop();
+
+    //DRAW ARC 
     P5.push();
     P5.translate(this.x, this.y);
-    
-    P5.angleMode(P5.DEGREES);
-    P5.rotate(this.angle + 180);
-
-    P5.noStroke();
-    P5.fill("white")
-    this.drawCircle(0, 0, radiusCut);
-
+    P5.rotate(this.angle);    
     P5.stroke("black");
-    P5.arc(
-      0,
-      0,
-      radiusCut * 2 * this.scale,
-      radiusCut * 2 * this.scale,
-      -tiltArc / 2,
-      tiltArc / 2,
-      P5.OPEN
-    );
-
+    P5.strokeWeight(this.word.strokeWeight);
+    
+    radiusCut = radiusCut * 2 * this.scale;
+    P5.arc(0, 0, radiusCut, radiusCut, 180-tiltArc / 2, 180+tiltArc / 2, P5.CLOSE);
     P5.pop();
   }
 
   drawCutConsonant() {
     this.drawCutWord(
-      CONSONANT_RADIUS * this.amplitude * CUT_CONSONANT_TILT,
+      CONSONANT_RADIUS * this.amplitude * CUT_CONSONANT_TILT_MULTIPLIER,
       CONSONANT_RADIUS * this.amplitude
     );
   }
@@ -208,9 +212,8 @@ export default class Consonant {
       this.vowel.angle = this.angle;
       this.vowel.scale = this.scale;
       this.vowel.amplitude = this.amplitude;
-      this.vowel.consonant = this;
-      this.vowel.x = this.x
-      this.vowel.y = this.y
+      this.vowel.Ox = this.Ox + this.x;
+      this.vowel.Oy = this.Oy + this.y;
       this.vowel.draw();
       P5.pop();
     }

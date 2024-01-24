@@ -1,7 +1,7 @@
 export const WORD_RADIUS = 500;
 export const CONSONANT_RADIUS = 150;
 export const VOWEL_RADIUS = 40
-export const CUT_CONSONANT_TILT = 1.8
+export const CUT_CONSONANT_TILT_MULTIPLIER = 1.8
 export const CUT_CONSONANT_VOWEL_TILT = 1.34
 export const WORD_TILT = 40;
 export const VOWEL_TILT = 80;
@@ -16,7 +16,8 @@ export const VOWEL_I = 8;
 export const VOWEL_O = 9;
 export const VOWEL_U = 10;
 
-
+export const WORD_TYPE = "WORDTYPE"
+export const VOWEL_TYPE = "VOWELTYPE"
 export const  CONSONANT_B = CONSONANT_TYPE_CUT
 export const  CONSONANT_C = CONSONANT_TYPE_INNER
 export const  CONSONANT_CH = CONSONANT_TYPE_CUT
