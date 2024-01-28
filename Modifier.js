@@ -1,18 +1,8 @@
- class Modifier {
+ class Modifier  extends Particle{
  
 
   constructor(type, parent) {
-    this.type = type;
-    this.parent=parent;
-    this.angle = random(60);
-    this.scale =parent.scale;
-    this.amplitude = parent.amplitude;
-    this.x;
-    this.y;
-    
-   
-   
-    
+    super(type,parent)
   }
   static createDots(numberOfDots=1,consonant){
     let angle = -180 +8*random(-10,10)
@@ -47,7 +37,7 @@
     x1 = -6 * VOWEL_RADIUS * this.amplitude;
     y1 = -6 * VOWEL_RADIUS * this.amplitude;
     push();
-    translate(this.x, this.y);
+    translate(this.position);
     // rotate(this.angle)
     line(x0 * this.ACos, y0 * this.ASin, x1 * this.ACos, y1 * this.ASin);
     pop();
@@ -61,19 +51,19 @@
     x1 = 6 * VOWEL_RADIUS * this.amplitude;
     y1 = 6 * VOWEL_RADIUS * this.amplitude;
     push();
-    translate(this.x, this.y);
+    translate(this.position);
     line(x0 * this.ACos, y0 * this.ASin, x1 * this.ACos, y1 * this.ASin);
     pop();
   }
   dotModifier(){
 
-    this.x = (CONSONANT_RADIUS+MODIFIER_DOT_TILT)*this.scale*this.amplitude
-    this.y = 0
+    this.position.x = (CONSONANT_RADIUS+MODIFIER_DOT_TILT)*this.scale*this.amplitude
+    this.position.y = 0
      
    
     push();
     rotate(this.angle)
-    translate(this.x, this.y);
+    translate(this.position);
     fill("black")
     circle(0, 0, MODIFIER_DOT_RADIUS * 2 * this.scale*this.amplitude);
     pop();
@@ -82,12 +72,12 @@
 
   lineModifier(){
 
-    this.x = (CONSONANT_RADIUS)*this.scale*this.amplitude
-    this.y = 0     
+    this.position.x = (CONSONANT_RADIUS)*this.scale*this.amplitude
+    this.position.y = 0     
    
     push();
     rotate(this.angle)
-    translate(this.x, this.y);
+    translate(this.position);
     fill("black")
     strokeWeight(4)
     strokeCap(SQUARE);

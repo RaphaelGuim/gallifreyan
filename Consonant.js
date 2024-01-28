@@ -1,169 +1,146 @@
-class Consonant {
-  constructor(type, word, modifiers) {
-    this.type = type;
-    this.word = word;
-    this.angleInWord = 0;
-    this.angle=0
-    this.scale = word.scale;
-    this.x = 0;
-    this.y = 0;
-    this.Ox;
-    this.Oy;
-    this.amplitude = word.amplitude;
-    this.vowel = null;
+class Consonant extends Particle {
+  constructor(type, parent, modifiers) {
+    super(type,parent)     
+    this.angleInParent = 0;
     this.modifiers = modifiers || [];
   }
   drawInnerConsonant() {
-    this.x =
-      (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
-      cos(this.angleInWord) *
-      this.scale;
-    this.y =
-      (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
-      sin(this.angleInWord) *
-      this.scale;
-    this.drawConsonantCircle(this.x, this.y, false);
+    if (!this.inicialPosition)  this.getInitialPosition()
+    this.drawConsonantCircle( false);
   }
-  drawConsonantCircle(x, y, fillCircle = true) {    
+  drawConsonantCircle(fillCircle = true) {
     push();
-    translate(x, y);
-    rotate(this.angleInWord)
+    translate(this.position);
+    rotate(this.angle);
     fill("white");
     if (!fillCircle) {
       noFill();
     }
-    this.drawCircle(0, 0, CONSONANT_RADIUS);
+    circle(0, 0, CONSONANT_RADIUS* 2 * this.scale * this.amplitude);
     pop();
   }
-
-  drawCircle(x, y, radius) {
-    circle(x, y, radius * 2 * this.scale* this.amplitude);
-  }
-
   drawCrossConsonant() {
-    this.x = WORD_RADIUS * this.scale * cos(this.angleInWord);
-    this.y = WORD_RADIUS * this.scale * sin(this.angleInWord);
-    this.drawConsonantCircle(this.x, this.y, false);
+    if (!this.inicialPosition)  this.getInitialPosition()
+    this.drawConsonantCircle(false);
   }
-
   drawHalfConsonant() {
     this.drawCutWord(
       CONSONANT_RADIUS * this.amplitude,
       CONSONANT_RADIUS * this.amplitude
     );
   }
-  static checkCompostConsonant(letter){
-    return ['ch','ph','wh','sh','th','gh' ,'qu','ng'].includes(letter )
+  static checkCompostConsonant(letter) {
+    return ["ch", "ph", "wh", "sh", "th", "gh", "qu", "ng"].includes(letter);
   }
   static getConsonant(letter, word) {
-    let consonant
+    let consonant;
     switch (letter) {
       case "b":
         return new Consonant(CONSONANT_B, word);
       case "c":
-        consonant = new Consonant(CONSONANT_C, word )
-        consonant.modifiers = Modifier.createDots(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_C, word);
+        consonant.modifiers = Modifier.createDots(2, consonant);
+        return consonant;
       case "ch":
-        consonant = new Consonant(CONSONANT_CH, word )
-        consonant.modifiers = Modifier.createDots(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_CH, word);
+        consonant.modifiers = Modifier.createDots(2, consonant);
+        return consonant;
       case "d":
-        consonant = new Consonant(CONSONANT_D, word )
-        consonant.modifiers = Modifier.createDots(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_D, word);
+        consonant.modifiers = Modifier.createDots(3, consonant);
+        return consonant;
       case "f":
-        consonant = new Consonant(CONSONANT_F, word )
-        consonant.modifiers = Modifier.createLines(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_F, word);
+        consonant.modifiers = Modifier.createLines(3, consonant);
+        return consonant;
       case "g":
-        consonant = new Consonant(CONSONANT_D, word )
-        consonant.modifiers = Modifier.createLines(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_D, word);
+        consonant.modifiers = Modifier.createLines(1, consonant);
+        return consonant;
       case "gh":
-        consonant = new Consonant(CONSONANT_GH, word )
-        consonant.modifiers = Modifier.createDots(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_GH, word);
+        consonant.modifiers = Modifier.createDots(1, consonant);
+        return consonant;
       case "h":
-        consonant = new Consonant(CONSONANT_H, word )
-        consonant.modifiers = Modifier.createLines(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_H, word);
+        consonant.modifiers = Modifier.createLines(2, consonant);
+        return consonant;
       case "j":
         return new Consonant(CONSONANT_J, word);
       case "k":
-        consonant = new Consonant(CONSONANT_K, word )
-        consonant.modifiers = Modifier.createDots(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_K, word);
+        consonant.modifiers = Modifier.createDots(2, consonant);
+        return consonant;
       case "l":
-        consonant = new Consonant(CONSONANT_L, word )
-        consonant.modifiers = Modifier.createDots(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_L, word);
+        consonant.modifiers = Modifier.createDots(3, consonant);
+        return consonant;
       case "m":
-        consonant = new Consonant(CONSONANT_M, word )
-        consonant.modifiers = Modifier.createLines(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_M, word);
+        consonant.modifiers = Modifier.createLines(3, consonant);
+        return consonant;
       case "n":
-        consonant = new Consonant(CONSONANT_N, word )
-        consonant.modifiers = Modifier.createLines(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_N, word);
+        consonant.modifiers = Modifier.createLines(1, consonant);
+        return consonant;
       case "ng":
-        consonant = new Consonant(CONSONANT_NG, word )
-        consonant.modifiers = Modifier.createLines(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_NG, word);
+        consonant.modifiers = Modifier.createLines(3, consonant);
+        return consonant;
       case "p":
-        consonant = new Consonant(CONSONANT_P, word )
-        consonant.modifiers = Modifier.createLines(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_P, word);
+        consonant.modifiers = Modifier.createLines(2, consonant);
+        return consonant;
       case "ph":
-        consonant = new Consonant(CONSONANT_PH, word )
-        consonant.modifiers = Modifier.createDots(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_PH, word);
+        consonant.modifiers = Modifier.createDots(1, consonant);
+        return consonant;
       case "q":
         return new Consonant(CONSONANT_Q, word);
       case "qu":
-        consonant = new Consonant(CONSONANT_QU, word )
-        consonant.modifiers = Modifier.createLines(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_QU, word);
+        consonant.modifiers = Modifier.createLines(1, consonant);
+        return consonant;
       case "r":
-        consonant = new Consonant(CONSONANT_R, word )
-        consonant.modifiers = Modifier.createDots(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_R, word);
+        consonant.modifiers = Modifier.createDots(3, consonant);
+        return consonant;
       case "s":
-        consonant = new Consonant(CONSONANT_S, word )
-        consonant.modifiers = Modifier.createLines(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_S, word);
+        consonant.modifiers = Modifier.createLines(3, consonant);
+        return consonant;
       case "sh":
-        consonant = new Consonant(CONSONANT_SH, word )
-        consonant.modifiers = Modifier.createDots(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_SH, word);
+        consonant.modifiers = Modifier.createDots(2, consonant);
+        return consonant;
       case "t":
         return new Consonant(CONSONANT_T, word);
       case "th":
         return new Consonant(CONSONANT_TH, word);
       case "v":
-        consonant = new Consonant(CONSONANT_V, word )
-        consonant.modifiers = Modifier.createLines(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_V, word);
+        consonant.modifiers = Modifier.createLines(1, consonant);
+        return consonant;
       case "x":
-        consonant = new Consonant(CONSONANT_QU, word )
-        consonant.modifiers = Modifier.createLines(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_QU, word);
+        consonant.modifiers = Modifier.createLines(2, consonant);
+        return consonant;
       case "w":
-        consonant = new Consonant(CONSONANT_W, word )
-        consonant.modifiers = Modifier.createLines(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_W, word);
+        consonant.modifiers = Modifier.createLines(2, consonant);
+        return consonant;
       case "wh":
-        consonant = new Consonant(CONSONANT_WH, word )
-        consonant.modifiers = Modifier.createDots(1,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_WH, word);
+        consonant.modifiers = Modifier.createDots(1, consonant);
+        return consonant;
       case "y":
-        consonant = new Consonant(CONSONANT_Y, word )
-        consonant.modifiers = Modifier.createDots(2,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_Y, word);
+        consonant.modifiers = Modifier.createDots(2, consonant);
+        return consonant;
       case "z":
-        consonant = new Consonant(CONSONANT_Z, word )
-        consonant.modifiers = Modifier.createDots(3,consonant)
-        return consonant ;
+        consonant = new Consonant(CONSONANT_Z, word);
+        consonant.modifiers = Modifier.createDots(3, consonant);
+        return consonant;
     }
   }
   tiltArc(r1, r2, tiltCut) {
@@ -175,20 +152,19 @@ class Consonant {
     angleMode(DEGREES);
     return degrees(angle);
   }
-
   drawCutWord(tiltCut, radiusCut) {
-    let distance = (WORD_RADIUS + radiusCut - tiltCut) * this.scale;
-    this.x = distance * cos(this.angleInWord);
-    this.y = distance * sin(this.angleInWord);
-
+    this.tiltCut = tiltCut
+    this.radiusCut=radiusCut
+    
+    if (!this.inicialPosition)  this.getInitialPosition()
     let tiltArc = this.tiltArc(WORD_RADIUS, radiusCut, tiltCut);
     let wordArc = this.tiltArc(radiusCut, WORD_RADIUS, tiltCut);
-
+ 
     //CLEAR WORD PERIMETER
     push();
-    rotate(this.angleInWord);
+    rotate(this.angle);
     stroke("white");
-    strokeWeight(this.word.strokeWeight * 5);
+    strokeWeight(this.parent.strokeWeight * 5);
     strokeCap(SQUARE);
     let clearRadius = WORD_RADIUS * 2 * this.scale;
 
@@ -198,10 +174,10 @@ class Consonant {
 
     //DRAW ARC
     push();
-    translate(this.x, this.y);
-    rotate(this.angleInWord);
+    translate(this.position);
+    rotate(this.angle);
     stroke("black");
-    strokeWeight(this.word.strokeWeight);
+    strokeWeight(this.parent.strokeWeight);
 
     radiusCut = radiusCut * 2 * this.scale;
     arc(
@@ -224,12 +200,10 @@ class Consonant {
   }
   drawModifiers() {
     push();
-    translate(this.x, this.y);
-    console.log(this.angle)
-    rotate(this.angleInWord)
-    this.modifiers.forEach((modifier) => {
-      modifier.Ox = this.Ox + this.x;
-      modifier.Oy = this.Oy + this.y;
+    translate(this.position);
+    
+    rotate(this.angle);
+    this.modifiers.forEach((modifier) => {       
       modifier.scale = this.scale;
       modifier.amplitude = this.amplitude;
       modifier.draw();
@@ -258,18 +232,58 @@ class Consonant {
         break;
     }
 
+   
+
     this.drawModifiers();
+    push();
+    translate(this.position);
+    rotate(this.angle);
+    this.children.forEach(child=>{
+     
+      child.scale = this.scale;
+      child.amplitude = this.amplitude;      
+      child.draw();
+     
+    })
+    pop();
     
-    if (this.vowel) {
-      push();      
-      translate(this.x, this.y);
-      rotate(this.angleInWord)
-      this.vowel.scale = this.scale;
-      this.vowel.amplitude = this.amplitude;
-      this.vowel.Ox = this.Ox + this.x;
-      this.vowel.Oy = this.Oy + this.y;
-      this.vowel.draw();
-      pop();
+  }
+
+  getInitialPosition(){
+    switch(this.type){
+      case CONSONANT_TYPE_INNER:
+        this.position.x =
+        (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
+        cos(this.angleInParent) *
+        this.scale;
+      this.position.y =
+        (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
+        sin(this.angleInParent) *
+        this.scale;
+        break;
+      case CONSONANT_TYPE_CROSS:
+        this.position.x = WORD_RADIUS * this.scale * cos(this.angleInParent);
+        this.position.y = WORD_RADIUS * this.scale * sin(this.angleInParent);        
+        break;
+      case CONSONANT_TYPE_HALF:
+      case CONSONANT_TYPE_CUT:
+      case CONSONANT_TYPE_CUT_WORD:
+        let distance = (WORD_RADIUS +  this.radiusCut - this.tiltCut) * this.scale;
+        this.position.x = distance * cos(this.angleInParent);
+        this.position.y = distance * sin(this.angleInParent);        
+        break;      
     }
+
+    this.angle = this.angleInParent
+    this.inicialPosition = true;
+  }
+
+  checkMouseOver() {
+    let position = this.getPositionInCanvas()
+    let radius = CONSONANT_RADIUS * this.amplitude * this.scale   
+    if(Math.pow(position.x - mouseX,2) +Math.pow(position.y - mouseY,2) <radius*radius){
+      return true
+    }
+    return false
   }
 }

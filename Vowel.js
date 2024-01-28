@@ -1,33 +1,21 @@
- 
+class Vowel extends Particle {
+  constructor(type, parent) {
+    super(type, parent);
 
- 
- class Vowel {
-  constructor(type,word) {
-    this.type = type;
-    this.word=word
-    this.scale = 1;
-    this.angle = 0;
-    this.word;
-    this.x = 0;
-    this.y = 0;
-    this.amplitude = 1;
-    this.Ox;
-    this.Oy;
-    this.modifiers = []
+    this.modifiers = [];
 
-    
     if (this.type == VOWEL_U) {
-      this.modifiers.push(new Modifier(MODIFIER_OUT,this))
+      this.modifiers.push(new Modifier(MODIFIER_OUT, this));
     }
 
     if (this.type == VOWEL_I) {
-      this.modifiers.push(new Modifier(MODIFIER_INNER,this))
+      this.modifiers.push(new Modifier(MODIFIER_INNER, this));
     }
   }
   getDistance() {
     let distance = 0;
-    console.log(this.parent.type)
-    if (this.parent.type==WORD_TYPE) {
+
+    if (this.parent.type == WORD_TYPE) {
       switch (this.type) {
         case VOWEL_A:
           distance = WORD_RADIUS + VOWEL_TILT * this.amplitude;
@@ -84,66 +72,77 @@
           }
           break;
         default:
-          distance = 0
+          distance = 0;
           break;
       }
     }
-    console.log(distance)
+
     return distance;
   }
 
-  draw() {  
-
+  getInitialPosition() {
     let distance = this.getDistance();
-   
-    if(this.parent.type == WORD_TYPE){       
-      this.x = distance* cos(this.angleInWord) * this.scale;
-      this.y = distance*sin(this.angleInWord) * this.scale;
-    }else{
-      this.x = distance * this.scale;
+    this.position.x = distance * cos(this.angleInParent) * this.scale;
+    this.position.y = distance * sin(this.angleInParent) * this.scale;
+    this.angle = this.angleInParent;
+    this.initialPosition = true;
+  }
 
-    } 
-    
+  draw() {
+    if (!this.initialPosition) this.getInitialPosition();
+
+    let radius = VOWEL_RADIUS * 2 * this.amplitude * this.scale;
+
     push();
-    translate(this.x, this.y);
-    if(this.parent.type == WORD_TYPE){
-      rotate(this.angleInWord)
-    }
-    rotate(this.angle)
-    this.modifiers.forEach(modifier=> {
-      modifier.amplitude = this.amplitude
-      modifier.scale = this.scale
-      modifier.draw()
-    })
+    translate(this.position);
+    rotate(this.angle);
+    this.modifiers.forEach((modifier) => {
+      modifier.amplitude = this.amplitude;
+      modifier.scale = this.scale;
+      modifier.draw();
+    });
     noFill();
-    circle(0, 0, VOWEL_RADIUS * 2 * this.amplitude * this.scale);
+    if (this.checkMouseOver()) {
+      fill("red");
+      circle(0, 0, radius);
+    }
+
+    circle(0, 0, radius);
     fill("white");
     pop();
-
-     
-
-    
   }
-   
-  static getVowel(letter,word) {
+
+  static getVowel(letter, word) {
     if ("aeiou".includes(letter)) {
       switch (letter) {
         case "a":
-          return new Vowel(VOWEL_A,word);
+          return new Vowel(VOWEL_A, word);
 
         case "e":
-          return new Vowel(VOWEL_E,word);
+          return new Vowel(VOWEL_E, word);
 
         case "i":
-          return new Vowel(VOWEL_I,word);
+          return new Vowel(VOWEL_I, word);
 
         case "o":
-          return new Vowel(VOWEL_O,word);
+          return new Vowel(VOWEL_O, word);
 
         case "u":
-          return new Vowel(VOWEL_U,word);
+          return new Vowel(VOWEL_U, word);
       }
     }
     return null;
+  }
+
+  checkMouseOver() {
+    let position = this.getPositionInCanvas();   
+    let radius = VOWEL_RADIUS * this.scale * this.amplitude;   
+    let p1 = position.x - mouseX;
+    let p2 = position.y - mouseY;
+     
+    if (Math.pow(p1, 2) + Math.pow(p2, 2) < radius * radius) {
+      return true;
+    }
+    return false;
   }
 }
