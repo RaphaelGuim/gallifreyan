@@ -1,9 +1,10 @@
 class Word extends Particle {
   constructor(word_string, parent) {
-    super(WORD_TYPE, parent);
-    this.wordString = word_string.toLowerCase();    
+    super(WORD_TYPE, parent, word_string);
+    this.wordString = word_string.toLowerCase();
     this.children = [];
-    this.strokeWeight = 1;
+    this.radius = WORD_RADIUS;
+
     this.mapString();
   }
   mapString() {
@@ -49,7 +50,7 @@ class Word extends Particle {
     }
 
     this.children = this.children.map((letter, index) => {
-      letter.angleInParent = -angle * index + 90;
+      letter.angleInParent = -angle * index + 90;     
       letter.amplitude = this.amplitude;
       return letter;
     });
@@ -60,29 +61,44 @@ class Word extends Particle {
     translate(this.position);
     rotate(this.angle);
     noFill();
-    strokeWeight(this.strokeWeight); 
-    circle(0, 0, WORD_RADIUS * 2 * this.scale);
+    strokeWeight(this.strokeWeight);
+    stroke(this.strokeColor);
+    circle(0, 0, this.radius * 2 * this.scale);
 
     this.children.forEach((letter) => {
       letter.scale = this.scale;
       letter.parent = this;
       letter.draw();
     });
-    //DEBUG
-    // fill("black");
-    // textSize(30);
-    // text(`${this.position.x},${this.position.y}`, 0, 0);
-
+     
     pop();
   }
   checkMouseOver() {
-    let position = this.getPositionInCanvas()
-    let radius = WORD_RADIUS * this.scale     
-    if(Math.pow(position.x - mouseX,2) +Math.pow(position.y - mouseY,2) <radius*radius){
-      return true
+    let position = this.getPositionInCanvas();
+    let radius = WORD_RADIUS * this.scale;
+    if (
+      Math.pow(position.x - mouseX, 2) + Math.pow(position.y - mouseY, 2) <
+      radius * radius
+    ) {
+      return true;
     }
-    return false
+    return false;
   }
-
-  
+  setRadius(radius) {
+    if(radius !=this.radius){
+      
+      this.radius = radius;
+      this.children.forEach((l) => {
+        l.inicialPosition = false;
+        l.modifiers.forEach((m) => (m.inicialPosition = false));
+        l.children.forEach((v) => {
+          v.inicialPosition = false;
+          v.modifiers.forEach((m) => (m.inicialPosition = false));
+        });
+      });
+     
+    }
+     
+      
+  }
 }

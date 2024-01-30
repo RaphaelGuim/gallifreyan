@@ -1,12 +1,60 @@
 class Consonant extends Particle {
-  constructor(type, parent, modifiers) {
-    super(type,parent)     
+  constructor(type, parent, modifiers,char="") {
+    super(type, parent,char);
     this.angleInParent = 0;
     this.modifiers = modifiers || [];
+    this.strokeColor = "black";
+  
+    this.tiltCut;
+    this.radiusCut;
+    this.radius = CONSONANT_RADIUS
+    
+    
+   
+  }
+  setStrokeWeight(value){    
+    switch(this.type){
+      case CONSONANT_TYPE_HALF:                
+      case CONSONANT_TYPE_CUT:                
+      case CONSONANT_TYPE_CUT_WORD:
+        this.parent.setStrokeWeight(value)
+        break;             
+    }
+    this.strokeWeight = value  
+    
+  }
+  getStrokeWeight(){
+    switch(this.type){
+      case CONSONANT_TYPE_HALF:                
+      case CONSONANT_TYPE_CUT:                
+      case CONSONANT_TYPE_CUT_WORD:
+        return this.parent.strokeWeight        
+        
+    }
+    return this.strokeWeight
+  }
+ 
+  move(addVector) {   
+    switch(this.type){
+      case CONSONANT_TYPE_HALF:
+      case CONSONANT_TYPE_CUT:
+      case CONSONANT_TYPE_CUT_WORD:
+        // let move = (addVector.x+addVector.y)
+        // this.tiltCut+=5
+        // this.radiusCut+=10
+        // this.radius+=10
+        break;
+      default:
+        this.position.add(addVector)
+        break;
+    }
+    
+      
+    
   }
   drawInnerConsonant() {
-    if (!this.inicialPosition)  this.getInitialPosition()
-    this.drawConsonantCircle( false);
+    if (!this.inicialPosition) this.getInitialPosition();
+    this.drawConsonantCircle(false);
   }
   drawConsonantCircle(fillCircle = true) {
     push();
@@ -16,133 +64,23 @@ class Consonant extends Particle {
     if (!fillCircle) {
       noFill();
     }
-    circle(0, 0, CONSONANT_RADIUS* 2 * this.scale * this.amplitude);
+    stroke(this.strokeColor);
+    strokeWeight(this.strokeWeight);
+    circle(0, 0, this.radius * 2 * this.scale * this.amplitude);
     pop();
   }
   drawCrossConsonant() {
-    if (!this.inicialPosition)  this.getInitialPosition()
+    if (!this.inicialPosition) this.getInitialPosition();
     this.drawConsonantCircle(false);
   }
   drawHalfConsonant() {
-    this.drawCutWord(
-      CONSONANT_RADIUS * this.amplitude,
-      CONSONANT_RADIUS * this.amplitude
-    );
-  }
-  static checkCompostConsonant(letter) {
-    return ["ch", "ph", "wh", "sh", "th", "gh", "qu", "ng"].includes(letter);
-  }
-  static getConsonant(letter, word) {
-    let consonant;
-    switch (letter) {
-      case "b":
-        return new Consonant(CONSONANT_B, word);
-      case "c":
-        consonant = new Consonant(CONSONANT_C, word);
-        consonant.modifiers = Modifier.createDots(2, consonant);
-        return consonant;
-      case "ch":
-        consonant = new Consonant(CONSONANT_CH, word);
-        consonant.modifiers = Modifier.createDots(2, consonant);
-        return consonant;
-      case "d":
-        consonant = new Consonant(CONSONANT_D, word);
-        consonant.modifiers = Modifier.createDots(3, consonant);
-        return consonant;
-      case "f":
-        consonant = new Consonant(CONSONANT_F, word);
-        consonant.modifiers = Modifier.createLines(3, consonant);
-        return consonant;
-      case "g":
-        consonant = new Consonant(CONSONANT_D, word);
-        consonant.modifiers = Modifier.createLines(1, consonant);
-        return consonant;
-      case "gh":
-        consonant = new Consonant(CONSONANT_GH, word);
-        consonant.modifiers = Modifier.createDots(1, consonant);
-        return consonant;
-      case "h":
-        consonant = new Consonant(CONSONANT_H, word);
-        consonant.modifiers = Modifier.createLines(2, consonant);
-        return consonant;
-      case "j":
-        return new Consonant(CONSONANT_J, word);
-      case "k":
-        consonant = new Consonant(CONSONANT_K, word);
-        consonant.modifiers = Modifier.createDots(2, consonant);
-        return consonant;
-      case "l":
-        consonant = new Consonant(CONSONANT_L, word);
-        consonant.modifiers = Modifier.createDots(3, consonant);
-        return consonant;
-      case "m":
-        consonant = new Consonant(CONSONANT_M, word);
-        consonant.modifiers = Modifier.createLines(3, consonant);
-        return consonant;
-      case "n":
-        consonant = new Consonant(CONSONANT_N, word);
-        consonant.modifiers = Modifier.createLines(1, consonant);
-        return consonant;
-      case "ng":
-        consonant = new Consonant(CONSONANT_NG, word);
-        consonant.modifiers = Modifier.createLines(3, consonant);
-        return consonant;
-      case "p":
-        consonant = new Consonant(CONSONANT_P, word);
-        consonant.modifiers = Modifier.createLines(2, consonant);
-        return consonant;
-      case "ph":
-        consonant = new Consonant(CONSONANT_PH, word);
-        consonant.modifiers = Modifier.createDots(1, consonant);
-        return consonant;
-      case "q":
-        return new Consonant(CONSONANT_Q, word);
-      case "qu":
-        consonant = new Consonant(CONSONANT_QU, word);
-        consonant.modifiers = Modifier.createLines(1, consonant);
-        return consonant;
-      case "r":
-        consonant = new Consonant(CONSONANT_R, word);
-        consonant.modifiers = Modifier.createDots(3, consonant);
-        return consonant;
-      case "s":
-        consonant = new Consonant(CONSONANT_S, word);
-        consonant.modifiers = Modifier.createLines(3, consonant);
-        return consonant;
-      case "sh":
-        consonant = new Consonant(CONSONANT_SH, word);
-        consonant.modifiers = Modifier.createDots(2, consonant);
-        return consonant;
-      case "t":
-        return new Consonant(CONSONANT_T, word);
-      case "th":
-        return new Consonant(CONSONANT_TH, word);
-      case "v":
-        consonant = new Consonant(CONSONANT_V, word);
-        consonant.modifiers = Modifier.createLines(1, consonant);
-        return consonant;
-      case "x":
-        consonant = new Consonant(CONSONANT_QU, word);
-        consonant.modifiers = Modifier.createLines(2, consonant);
-        return consonant;
-      case "w":
-        consonant = new Consonant(CONSONANT_W, word);
-        consonant.modifiers = Modifier.createLines(2, consonant);
-        return consonant;
-      case "wh":
-        consonant = new Consonant(CONSONANT_WH, word);
-        consonant.modifiers = Modifier.createDots(1, consonant);
-        return consonant;
-      case "y":
-        consonant = new Consonant(CONSONANT_Y, word);
-        consonant.modifiers = Modifier.createDots(2, consonant);
-        return consonant;
-      case "z":
-        consonant = new Consonant(CONSONANT_Z, word);
-        consonant.modifiers = Modifier.createDots(3, consonant);
-        return consonant;
+    if (!this.tiltCut || !this.radiusCut) {
+      this.tiltCut = this.radius * this.amplitude
+      this.radiusCut = this.radius * this.amplitude
     }
+    this.drawCutWord(this.tiltCut, this.radiusCut);
   }
+ 
   tiltArc(r1, r2, tiltCut) {
     angleMode(RADIANS);
     let d = r1 + r2 - tiltCut;
@@ -153,22 +91,22 @@ class Consonant extends Particle {
     return degrees(angle);
   }
   drawCutWord(tiltCut, radiusCut) {
-    this.tiltCut = tiltCut
-    this.radiusCut=radiusCut
-    
-    if (!this.inicialPosition)  this.getInitialPosition()
-    let tiltArc = this.tiltArc(WORD_RADIUS, radiusCut, tiltCut);
-    let wordArc = this.tiltArc(radiusCut, WORD_RADIUS, tiltCut);
- 
+    this.tiltCut = tiltCut;
+    this.radiusCut = radiusCut;
+
+    if (!this.inicialPosition) this.getInitialPosition();
+    let tiltArc = this.tiltArc(this.parent.radius, radiusCut, tiltCut);
+    let wordArc = this.tiltArc(radiusCut, this.parent.radius, tiltCut);
+
     //CLEAR WORD PERIMETER
     push();
     rotate(this.angle);
     stroke("white");
     strokeWeight(this.parent.strokeWeight * 5);
     strokeCap(SQUARE);
-    let clearRadius = WORD_RADIUS * 2 * this.scale;
+    let clearRadius = this.parent.radius * 2 * this.scale;
 
-    arc(0, 0, clearRadius, clearRadius, -wordArc / 2, wordArc / 2, CLOSE);
+    arc(0, 0, clearRadius, clearRadius, -wordArc / 2, wordArc / 2, OPEN);
 
     pop();
 
@@ -176,34 +114,33 @@ class Consonant extends Particle {
     push();
     translate(this.position);
     rotate(this.angle);
-    stroke("black");
+    stroke(this.strokeColor);
     strokeWeight(this.parent.strokeWeight);
 
     radiusCut = radiusCut * 2 * this.scale;
-    arc(
-      0,
-      0,
-      radiusCut,
-      radiusCut,
-      180 - tiltArc / 2,
-      180 + tiltArc / 2,
-      CLOSE
-    );
+
+    arc(0, 0, radiusCut, radiusCut, 180 - tiltArc / 2, 180 + tiltArc / 2, OPEN);
     pop();
   }
 
+  
+
   drawCutConsonant() {
-    this.drawCutWord(
-      CONSONANT_RADIUS * this.amplitude * CUT_CONSONANT_TILT_MULTIPLIER,
-      CONSONANT_RADIUS * this.amplitude
-    );
+ 
+    if (!this.tiltCut || !this.radiusCut) {
+    
+      this.tiltCut =
+        this.radius * this.amplitude * CUT_CONSONANT_TILT_MULTIPLIER
+      this.radiusCut = this.radius * this.amplitude;
+    }
+    this.drawCutWord(this.tiltCut, this.radiusCut);
   }
   drawModifiers() {
     push();
     translate(this.position);
-    
+
     rotate(this.angle);
-    this.modifiers.forEach((modifier) => {       
+    this.modifiers.forEach((modifier) => {
       modifier.scale = this.scale;
       modifier.amplitude = this.amplitude;
       modifier.draw();
@@ -211,8 +148,8 @@ class Consonant extends Particle {
     pop();
   }
   draw(
-    tilt = CONSONANT_RADIUS * this.amplitude,
-    radius = CONSONANT_RADIUS * this.amplitude * 4
+    tilt = this.radius * this.amplitude,
+    radius = this.radius * this.amplitude * 4
   ) {
     switch (this.type) {
       case CONSONANT_TYPE_INNER:
@@ -232,58 +169,89 @@ class Consonant extends Particle {
         break;
     }
 
-   
-
     this.drawModifiers();
     push();
     translate(this.position);
     rotate(this.angle);
-    this.children.forEach(child=>{
-     
+    this.children.forEach((child) => {
       child.scale = this.scale;
-      child.amplitude = this.amplitude;      
+      child.amplitude = this.amplitude;
       child.draw();
-     
-    })
+    });
     pop();
-    
   }
 
-  getInitialPosition(){
-    switch(this.type){
+  getInitialPosition() {
+    let x ,y;
+    switch (this.type) {
       case CONSONANT_TYPE_INNER:
-        this.position.x =
-        (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
-        cos(this.angleInParent) *
-        this.scale;
-      this.position.y =
-        (WORD_RADIUS - CONSONANT_RADIUS * this.amplitude - WORD_TILT) *
-        sin(this.angleInParent) *
-        this.scale;
+        x =
+          (this.parent.radius - this.radius * this.amplitude - WORD_TILT) *
+          cos(this.angleInParent) *
+          this.scale;
+        y =
+          (this.parent.radius - this.radius * this.amplitude - WORD_TILT) *
+          sin(this.angleInParent) *
+          this.scale;
         break;
       case CONSONANT_TYPE_CROSS:
-        this.position.x = WORD_RADIUS * this.scale * cos(this.angleInParent);
-        this.position.y = WORD_RADIUS * this.scale * sin(this.angleInParent);        
+        x = this.parent.radius * this.scale * cos(this.angleInParent);
+        y = this.parent.radius * this.scale * sin(this.angleInParent);
         break;
       case CONSONANT_TYPE_HALF:
       case CONSONANT_TYPE_CUT:
       case CONSONANT_TYPE_CUT_WORD:
-        let distance = (WORD_RADIUS +  this.radiusCut - this.tiltCut) * this.scale;
-        this.position.x = distance * cos(this.angleInParent);
-        this.position.y = distance * sin(this.angleInParent);        
-        break;      
+        let distance =
+          (this.parent.radius + this.radiusCut - this.tiltCut) * this.scale;
+        x = distance * cos(this.angleInParent);
+        y = distance * sin(this.angleInParent);
+        break;
     }
-
-    this.angle = this.angleInParent
+    this.position.sub(this.startPosition)
+    this.startPosition = createVector(x,y)
+    this.position.add(this.startPosition)
+    this.angle = this.angleInParent;
     this.inicialPosition = true;
   }
 
   checkMouseOver() {
-    let position = this.getPositionInCanvas()
-    let radius = CONSONANT_RADIUS * this.amplitude * this.scale   
-    if(Math.pow(position.x - mouseX,2) +Math.pow(position.y - mouseY,2) <radius*radius){
-      return true
+    let position = this.getPositionInCanvas();
+    let radius = this.radius * this.amplitude * this.scale;
+    if (
+      Math.pow(position.x - mouseX, 2) + Math.pow(position.y - mouseY, 2) <
+      radius * radius
+    ) {
+      return true;
     }
-    return false
+    return false;
+  }
+
+  setRadius(radius){
+    switch(this.type){
+      case CONSONANT_TYPE_HALF:
+        this.radius = radius
+        this.tiltCut = this.radius * this.amplitude
+        this.radiusCut = this.radius * this.amplitude
+        this.getInitialPosition()
+        break;
+      case CONSONANT_TYPE_CUT:
+      case CONSONANT_TYPE_CUT_WORD:
+        this.radius = radius
+        this.tiltCut = this.radius * this.amplitude * CUT_CONSONANT_TILT_MULTIPLIER
+        this.radiusCut = this.radius * this.amplitude;
+        this.getInitialPosition()
+        break;
+      default:
+        this.radius = radius
+        break;
+    }
+   
+  }
+  setAngleInParent(angle){
+    if(angle !=this.angleInParent){
+       this.angleInParent = angle
+     this.getInitialPosition()
+    }
+    
   }
 }

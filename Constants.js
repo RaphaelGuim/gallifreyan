@@ -10,11 +10,11 @@ const CONSONANT_TYPE_CROSS ="CROSS_CONSONANT";
 const CONSONANT_TYPE_HALF = "HALF_CONSONANT";
 const CONSONANT_TYPE_CUT = "CUT_CONSONANT";;
 const CONSONANT_TYPE_CUT_WORD = "CUT_WORD";
-const VOWEL_A = 6;
-const VOWEL_E = 7;
-const VOWEL_I = 8;
-const VOWEL_O = 9;
-const VOWEL_U = 10;
+const VOWEL_A = "A";
+const VOWEL_E = "E";
+const VOWEL_I = "I";
+const VOWEL_O = "O";
+const VOWEL_U = "U";
 
 const WORD_TYPE = "WORDTYPE";
 const VOWEL_TYPE = "VOWELTYPE";

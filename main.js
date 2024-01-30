@@ -1,48 +1,56 @@
 let words;
-let Objects = [];
+let objects = [];
 let selectedObject = null;
+let originParent;
+let scale = 0.15;
+let sliders = [];
+let selected;
+let hover;
+const pressed = new Set();
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   rectMode(CENTER);
   angleMode(DEGREES);
+  originParent = new Particle();
+  originParent.scale = scale;
+  originParent.children = 
   
-  words = [
-    // new Word("ra ",500, 600 ),
-    new Word("wacaqaraa" ),
-    // new Word("beceqeree"),
-    // new Word("biciqirii"),
-    // new Word("bocoqoroo" ),
-    // new Word("bucuxuruu"),
-
-    // new Word("wa".split("").map(l=> `d${l}a`).join()),
-    // new Word("wa"),
-    // new Word("bacada", windowWidth / 2, windowHeight / 2),
-  ];
-  words.forEach((w) => {
-    Objects.push(w);
+  "Kronnos e o senhor do tempo".split(" ").map(w=> new Word(w, originParent),)
+   
+  originParent.children.forEach((w,index) => {
+    w.position.x = (index+1)*windowWidth/(originParent.children.length +2)
+    
+    w.position.y = windowHeight / 2;
+    w.scale = scale
+    objects.push(w);
     w.children.forEach((l) => {
-      Objects.push(l);
-      l.modifiers.forEach((m) => Objects.push(m));
-      if(l.vowel){
-        Objects.push(l.vowel);
-      l.vowel.modifiers.forEach((m) => Objects.push(m));
-      }
-      
+      objects.push(l);
+      l.modifiers.forEach((m) => objects.push(m));
+      l.children.forEach((v) => {
+        objects.push(v);
+        v.modifiers.forEach((m) => objects.push(m));
+      });
     });
   });
+  createSliders()
 }
+
 
 function draw() {
   background("white");
-  words.forEach((w) => {
-    w.scale = 0.4;
-    
-    w.position.x  =windowWidth / 2 
-    w.position.y  =windowHeight / 2 
-    w.draw();
-    //  w.angle +=1 
-  });
+  originParent.draw();
+  moveParent();
+  findHover();
   
-
-  // Objects.forEach(obj=>console.log(obj.getPositionInCanvas()))
+   
+  showSliders();
 }
+
+
+
+
+
+ 
+
+ 

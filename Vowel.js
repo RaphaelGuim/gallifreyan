@@ -1,6 +1,6 @@
 class Vowel extends Particle {
-  constructor(type, parent) {
-    super(type, parent);
+  constructor(type, parent,char) {
+    super(type, parent,char);
 
     this.modifiers = [];
 
@@ -18,15 +18,15 @@ class Vowel extends Particle {
     if (this.parent.type == WORD_TYPE) {
       switch (this.type) {
         case VOWEL_A:
-          distance = WORD_RADIUS + VOWEL_TILT * this.amplitude;
+          distance = this.parent.radius + VOWEL_TILT * this.amplitude;
           break;
         case VOWEL_I:
         case VOWEL_E:
         case VOWEL_U:
-          distance = WORD_RADIUS;
+          distance = this.parent.radius;
           break;
         case VOWEL_O:
-          distance = WORD_RADIUS - VOWEL_TILT * this.amplitude;
+          distance = this.parent.radius - VOWEL_TILT * this.amplitude;
           break;
       }
     } else {
@@ -81,32 +81,50 @@ class Vowel extends Particle {
   }
 
   getInitialPosition() {
+   
+    
     let distance = this.getDistance();
-    this.position.x = distance * cos(this.angleInParent) * this.scale;
-    this.position.y = distance * sin(this.angleInParent) * this.scale;
+    let x = distance * cos(this.angleInParent) * this.scale;
+    let y = distance * sin(this.angleInParent) * this.scale;
+   
     this.angle = this.angleInParent;
-    this.initialPosition = true;
-  }
 
+    this.position.sub(this.startPosition)
+    this.startPosition = createVector(x,y)
+    this.position.add(this.startPosition)
+       
+    this.inicialPosition = true;
+  }
+  drawModifiers() {
+    push();
+    translate(this.position);    
+    this.modifiers.forEach((modifier) => {
+      modifier.scale = this.scale;
+      modifier.amplitude = this.amplitude;
+      modifier.draw();
+    });
+    pop();
+  }
   draw() {
-    if (!this.initialPosition) this.getInitialPosition();
+    if(!this.inicialPosition){
+      
+      this.getInitialPosition()
+    }
+    
+    
+ 
 
     let radius = VOWEL_RADIUS * 2 * this.amplitude * this.scale;
 
+    this.drawModifiers() 
     push();
     translate(this.position);
     rotate(this.angle);
-    this.modifiers.forEach((modifier) => {
-      modifier.amplitude = this.amplitude;
-      modifier.scale = this.scale;
-      modifier.draw();
-    });
+     
     noFill();
-    if (this.checkMouseOver()) {
-      fill("red");
-      circle(0, 0, radius);
-    }
-
+   
+    stroke(this.strokeColor)
+    strokeWeight(this.strokeWeight)
     circle(0, 0, radius);
     fill("white");
     pop();
@@ -116,19 +134,19 @@ class Vowel extends Particle {
     if ("aeiou".includes(letter)) {
       switch (letter) {
         case "a":
-          return new Vowel(VOWEL_A, word);
+          return new Vowel(VOWEL_A, word,letter);
 
         case "e":
-          return new Vowel(VOWEL_E, word);
+          return new Vowel(VOWEL_E, word,letter);
 
         case "i":
-          return new Vowel(VOWEL_I, word);
+          return new Vowel(VOWEL_I, word,letter);
 
         case "o":
-          return new Vowel(VOWEL_O, word);
+          return new Vowel(VOWEL_O, word,letter);
 
         case "u":
-          return new Vowel(VOWEL_U, word);
+          return new Vowel(VOWEL_U, word,letter);
       }
     }
     return null;
