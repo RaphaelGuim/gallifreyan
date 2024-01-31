@@ -7,6 +7,14 @@ class Word extends Particle {
 
     this.mapString();
   }
+
+  setScale(scale) {
+    if (scale != this.scale) {
+     
+      this.scale = scale;
+      
+    }
+  }
   mapString() {
     for (let i = 0; i < this.wordString.length; i++) {
       //ADD ALONE VOWEL
@@ -64,6 +72,8 @@ class Word extends Particle {
     strokeWeight(this.strokeWeight);
     stroke(this.strokeColor);
     circle(0, 0, this.radius * 2 * this.scale);
+    fill('black')
+     
 
     this.children.forEach((letter) => {
       letter.scale = this.scale;
@@ -75,7 +85,7 @@ class Word extends Particle {
   }
   checkMouseOver() {
     let position = this.getPositionInCanvas();
-    let radius = WORD_RADIUS * this.scale;
+    let radius = this.radius * this.scale*scaleA
     if (
       Math.pow(position.x - mouseX, 2) + Math.pow(position.y - mouseY, 2) <
       radius * radius

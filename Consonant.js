@@ -101,6 +101,7 @@ class Consonant extends Particle {
     //CLEAR WORD PERIMETER
     push();
     rotate(this.angle);
+    noFill()
     stroke("white");
     strokeWeight(this.parent.strokeWeight * 5);
     strokeCap(SQUARE);
@@ -114,10 +115,12 @@ class Consonant extends Particle {
     push();
     translate(this.position);
     rotate(this.angle);
+    noFill()
     stroke(this.strokeColor);
     strokeWeight(this.parent.strokeWeight);
 
     radiusCut = radiusCut * 2 * this.scale;
+    
 
     arc(0, 0, radiusCut, radiusCut, 180 - tiltArc / 2, 180 + tiltArc / 2, OPEN);
     pop();

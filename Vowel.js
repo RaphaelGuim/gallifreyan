@@ -1,7 +1,7 @@
 class Vowel extends Particle {
   constructor(type, parent,char) {
     super(type, parent,char);
-
+    this.radius = VOWEL_RADIUS
     this.modifiers = [];
 
     if (this.type == VOWEL_U) {
@@ -10,6 +10,14 @@ class Vowel extends Particle {
 
     if (this.type == VOWEL_I) {
       this.modifiers.push(new Modifier(MODIFIER_INNER, this));
+    }
+  }
+
+  setScale(scale) {
+    if (scale != this.scale) {
+     
+      this.scale = scale;
+      
     }
   }
   getDistance() {
@@ -114,7 +122,7 @@ class Vowel extends Particle {
     
  
 
-    let radius = VOWEL_RADIUS * 2 * this.amplitude * this.scale;
+    let radius = this.radius * 2 * this.amplitude * this.scale;
 
     this.drawModifiers() 
     push();
@@ -154,7 +162,9 @@ class Vowel extends Particle {
 
   checkMouseOver() {
     let position = this.getPositionInCanvas();   
-    let radius = VOWEL_RADIUS * this.scale * this.amplitude;   
+    let radius = this.radius * this.amplitude * this.scale;   
+    
+    
     let p1 = position.x - mouseX;
     let p2 = position.y - mouseY;
      
@@ -163,4 +173,9 @@ class Vowel extends Particle {
     }
     return false;
   }
+
+ 
+
+   
+
 }

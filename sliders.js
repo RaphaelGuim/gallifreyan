@@ -1,10 +1,10 @@
 function createSliders() {
   
   //Scale
-  let slider = createSlider(0.01, 1, 1, 0.01);
+  let slider = createSlider(0, 5, 1, 0.01);
   slider.size(0);
   sliders.push(slider);
-  slider.value(originParent.scale); 
+  slider.value(scaleA); 
   
   //STROKE
   slider = createSlider(0.1, 5, 1, 0.01);
@@ -32,8 +32,9 @@ function setSlider(index,x,y){
 
     switch(index){
         case 0:           
-            text(`Scale`, x,y); 
-            originParent.setScale(sliders[index].value())
+            text(`Scale`, x,y);
+            
+            scaleA =sliders[index].value()            
             break
         case 1:
             text(`Selected: ${selected} `, x,y-15); 
@@ -69,7 +70,7 @@ function showSliders() {
   }
 }
 function setSliderValues() {
-  
+  sliders[0].value(scaleA)
   sliders[1].value(selected.getStrokeWeight());
   sliders[2].value(selected.radius);
   sliders[3].value(selected.angleInParent);
