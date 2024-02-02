@@ -219,7 +219,7 @@ class Consonant extends Particle {
 
   checkMouseOver() {
     let position = this.getPositionInCanvas();
-    let radius = this.radius * this.amplitude * this.scale;
+    let radius = this.radius * this.amplitude * this.scale*scaleA;
     if (
       Math.pow(position.x - mouseX, 2) + Math.pow(position.y - mouseY, 2) <
       radius * radius

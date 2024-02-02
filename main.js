@@ -7,10 +7,12 @@ let scaleParent = 0.2;
 let sliders = [];
 let selected;
 let hover;
+let hoverPanel;
 let translateX;
 let translateY;
 
 const pressed = new Set();
+let objects_list = [];
 
 let canvas;
 function setup() {
@@ -22,16 +24,14 @@ function setup() {
   angleMode(DEGREES);
   originParent = new Particle();
   originParent.scale = scaleParent;
-  originParent.children = "ca"
+  originParent.children = "O Senhor e meu pastor e nada me faltara"
     .split(" ")
     .map((w) => new Word(w, originParent));
-
 
   originParent.scale = scaleParent;
   let len = originParent.children.length;
   originParent.children.forEach((w, index) => {
-    console.log(len/2 - index)
-    w.position.x = -(len/2 - index-1) *(window.innerWidth / (len+2))
+    w.position.x = -(len / 2 - index) * (window.innerWidth / (len + 1));
 
     w.position.y = -100;
     w.scale = scaleParent;
@@ -49,6 +49,9 @@ function setup() {
   });
   createSliders();
   setSlider(0, 10, 15);
+
+  const elements = document.getElementById("elements");
+  // create_list(originParent.children,elements)
 }
 
 function draw() {
@@ -61,9 +64,29 @@ function draw() {
 
   originParent.draw();
   moveParent();
- 
+
   pop();
   findHover();
 
-  showSliders();
+  if (hoverPanel && hoverPanel != selected) {
+    hover = hoverPanel;
+    hover.strokeColor = "gray";
+    text(`Hover: ${hover}`, 10, 45);
+  }
+
+  showHover();
+
+  // showSliders();
+}
+function setHover(hv) {
+  if (hv != hoverPanel) {
+    hoverPanel = hv;
+  }
+}
+function changeSelected(element) {
+  selected = element;
+}
+
+function getSelected() {
+  return selected;
 }

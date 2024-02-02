@@ -3,21 +3,32 @@ function mouseClicked() {
   if (hover) {
    
     if (selected != hover) {
-      selected = hover;
-      selected.strokeColor = "blue";
+      
+      setSelected(hover)
+      
+       
       setSliderValues();
+      if(!hoverPanel){
+        selected.executeScroll()
+      }
     }
   }
+}
+
+function setSelected(element){
+  selected = element
+  selected.setSelected(selected)
+  
 }
 function mouseDragged() {
   if (selected) {
     let position = selected.getPositionInCanvas();
     let distance = position.sub(createVector(mouseX, mouseY)).mag();
-   
-    if (distance < 100) {
+    
+    if (distance < selected.radius*scaleA) {
       let rotation = selected.getRotationInCanvas();
 
-      selected.move(createVector(movedX, movedY).rotate(-rotation));
+      selected.move(createVector(movedX, movedY).mult(1/scaleA).rotate(-rotation));
     }
   }
 }
@@ -32,6 +43,10 @@ function findHover() {
       objects[i].strokeColor = objects[i].color;
     }
   }
+  
+ 
+}
+function showHover(){
   if (hover && hover != selected) {
     hover.strokeColor = "gray"
     text(`Hover: ${hover}`, 10,45); 
