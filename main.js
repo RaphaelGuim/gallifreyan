@@ -47,8 +47,7 @@ function setup() {
       });
     });
   });
-  createSliders();
-  setSlider(0, 10, 15);
+   
 
   const elements = document.getElementById("elements");
   // create_list(originParent.children,elements)
@@ -64,19 +63,22 @@ function draw() {
 
   originParent.draw();
   moveParent();
-
+  
   pop();
   findHover();
 
   if (hoverPanel && hoverPanel != selected) {
     hover = hoverPanel;
-    hover.strokeColor = "gray";
-    text(`Hover: ${hover}`, 10, 45);
+     
+     
   }
+  
+ 
+ 
 
   showHover();
 
-  // showSliders();
+  
 }
 function setHover(hv) {
   if (hv != hoverPanel) {

@@ -1,12 +1,13 @@
 const EntitiesPanel = (props) => {
   function create_list(arr, id) {
     if (arr) {
+       
       return (
-        <ul id={`ul${id}`} className="list-group">
+        <ul key={`ul${id}`} className="list-group">
           {arr.map((element) => {
             return (
               <Li
-                id={element.id}
+                key={element.id}
                 element={element}
                 {...props}
                 selected={props.selected}
@@ -25,7 +26,7 @@ const EntitiesPanel = (props) => {
   }
 
   return (
-    <div
+    <div id="entitiesPanel"
       style={{ backgroundColor: "white",height: window.innerHeight*0.6,overflow: "scroll" }}
       onMouseLeave={() => props.setHover(null)}
     >

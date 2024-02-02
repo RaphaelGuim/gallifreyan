@@ -1,7 +1,10 @@
 const App = (props) => {
   const [entities, setEntities] = React.useState(props.entities);
   const [selected, setSelected] = React.useState(null);
-
+  let editor;
+  if(selected){
+    editor = <Editor selected={selected}/>
+  }
   return (
     <div >
       <EntitiesPanel
@@ -10,7 +13,12 @@ const App = (props) => {
         selected={selected}
         setSelected={setSelected}
       />
-      <div>Teste</div>
+      <div>
+      {editor}
+      
+     
+          
+        </div>
     </div>
   );
 };

@@ -18,7 +18,7 @@ const Li = (props) => {
     };
     const style = {
       borderRadius: "5px",
-    //   paddingLeft: "1px",
+      paddingLeft: "1px",
     };
   
     let className = "bg-white";
@@ -29,8 +29,9 @@ const Li = (props) => {
     }
   
     return (
-      <li className="list-group-item py-0">
+      <li className="list-group-item py-0" id={"li"+props.element.id}>
         <div
+        id ={"div"+props.element.id}
           ref={myRef}
           className={className}
           style={style}

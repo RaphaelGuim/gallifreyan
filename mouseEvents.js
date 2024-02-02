@@ -6,8 +6,8 @@ function mouseClicked() {
       
       setSelected(hover)
       
-       
-      setSliderValues();
+      selected.strokeColor=selected.color 
+      // setSliderValues();
       if(!hoverPanel){
         selected.executeScroll()
       }
@@ -23,9 +23,10 @@ function setSelected(element){
 function mouseDragged() {
   if (selected) {
     let position = selected.getPositionInCanvas();
-    let distance = position.sub(createVector(mouseX, mouseY)).mag();
-    
-    if (distance < selected.radius*scaleA) {
+    let distance = position.copy().sub(createVector(mouseX, mouseY)).mag();
+   
+    if (distance < selected.getRadius()) {
+     
       let rotation = selected.getRotationInCanvas();
 
       selected.move(createVector(movedX, movedY).mult(1/scaleA).rotate(-rotation));
@@ -48,7 +49,10 @@ function findHover() {
 }
 function showHover(){
   if (hover && hover != selected) {
-    hover.strokeColor = "gray"
+    hover.strokeColor = "#0099cc"
     text(`Hover: ${hover}`, 10,45); 
   }
+  
+  
+  
 }

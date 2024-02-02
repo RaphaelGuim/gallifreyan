@@ -16,7 +16,7 @@ class Particle {
     this.position = createVector(0, 0);
     this.startPosition = createVector(0, 0);
     this.children = [];
-    this.defaultColor = "black";
+ 
     this.strokeColor = "black";
     this.color = "black";
     this.char = char;
@@ -35,7 +35,7 @@ class Particle {
     this.radius = radius;
   }
   getRadius() {
-    return this.radius;
+    return this.radius * this.scale;
   }
 
   setScale(scale) {
@@ -100,7 +100,9 @@ class Particle {
   checkMouseOver() {
     return false;
   }
-
+  setAngle(angle) {
+    this.angle = angle;
+  }
   setAngleInParent(angle) {
     this.angleInParent = angle;
   }
